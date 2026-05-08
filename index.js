@@ -17,8 +17,10 @@ app.use(cors());
 const port = 3000;
 
 const courseRouter = require("./routes/courses.routes");
+const userRouter = require("./routes/users.routes");
 
 app.use("/api/courses", courseRouter);
+app.use("/api/users", userRouter);
 app.use((req, res) => {
   res.status(404).json({
     status: httpStatusText.ERROR,
