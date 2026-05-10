@@ -30,6 +30,7 @@ const getCourseById = async (req, res) => {
         status: httpStatusText.FAIL,
         data: { course: "course not found" },
       });
+
     res.status(200).json({ status: httpStatusText.SUCCESS, data: { course } });
   } catch (err) {
     return res.status(500).json({
