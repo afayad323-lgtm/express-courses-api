@@ -1,6 +1,9 @@
 const { body } = require("express-validator");
 const express = require("express");
 const router = express.Router();
+const verifyToken = require("../middleware/authverifytoken");
+const userRoles = require("../utils/user.roles");
+const allowedTo = require("../middleware/allowTo");
 
 const {
   getAllCourses,
@@ -18,6 +21,8 @@ router
     body("price")
       .isFloat({ gt: 0 })
       .withMessage("Price must be a positive number"),
+    verifyToken,
+    allowedTo(userRoles.MANAGER),
     createCourse,
   );
 
@@ -32,6 +37,10 @@ router
       .withMessage("Price must be a positive number"),
     updateCourse,
   )
-  .delete(deleteCourse);
+  .delete(
+    verifyToken,
+    allowedTo(userRoles.ADMIN, userRoles.MANAGER),
+    deleteCourse,
+  );
 
 module.exports = router;

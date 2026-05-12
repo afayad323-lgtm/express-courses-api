@@ -30,7 +30,7 @@ const getAllUsers = async (req, res) => {
 
 const register = async (req, res) => {
   try {
-    const { firstName, lastName, email, password } = req.body;
+    const { firstName, lastName, email, password, role } = req.body;
 
     const oldUser = await usersModel.findOne({ email });
 
@@ -49,9 +49,14 @@ const register = async (req, res) => {
       lastName,
       email,
       password: hashedPassword,
+      role,
     });
 
-    const token = generateJWT({ email: newUser.email, id: newUser._id });
+    const token = generateJWT({
+      email: newUser.email,
+      id: newUser._id,
+      role: newUser.role,
+    });
 
     res.status(201).json({
       status: httpStatusText.SUCCESS,
@@ -61,6 +66,7 @@ const register = async (req, res) => {
           firstName: newUser.firstName,
           lastName: newUser.lastName,
           email: newUser.email,
+          userRole: newUser.role,
         },
         token,
       },
@@ -106,7 +112,11 @@ const login = async (req, res) => {
       });
     }
 
-    const token = generateJWT({ email: user.email, id: user._id });
+    const token = generateJWT({
+      email: user.email,
+      id: user._id,
+      role: user.role,
+    });
 
     res.status(200).json({
       status: httpStatusText.SUCCESS,
@@ -116,6 +126,7 @@ const login = async (req, res) => {
           firstName: user.firstName,
           lastName: user.lastName,
           email: user.email,
+          role: user.role,
           token: token,
         },
       },
